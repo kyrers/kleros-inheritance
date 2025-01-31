@@ -39,12 +39,12 @@ contract Inheritance is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Creates the inheritance contract while setting the owner and the heir
+     * @notice Creates the inheritance contract while setting the owner and the heir. The deployer can send ETH here.
      * @param _heir The heir address
      */
     constructor(
         address _heir
-    ) Ownable(msg.sender) validHeir(_heir, msg.sender) {
+    ) payable Ownable(msg.sender) validHeir(_heir, msg.sender) {
         heir = _heir;
         lastAction = block.timestamp;
         emit HeirUpdated(heir);
