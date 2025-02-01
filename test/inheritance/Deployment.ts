@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
-import { deployInheritanceFixture } from "./utils/fixtures";
+import { deployInheritanceFixture } from "../utils/fixtures";
 import { ethers } from "hardhat";
 
 describe("# DEPLOYMENT #", function () {
@@ -24,24 +24,14 @@ describe("# DEPLOYMENT #", function () {
   });
 
   it("Should set lastAction to block timestamp", async function () {
-    const { inheritance, deployTx } = await loadFixture(
-      deployInheritanceFixture
-    );
-
-    if (!deployTx || !deployTx.blockNumber) {
-      throw new Error("No deployment tx or block number available");
-    }
-
-    const block = await ethers.provider.getBlock(deployTx.blockNumber);
-
-    expect(await inheritance.lastAction()).to.equal(block?.timestamp);
+    const { inheritance, block } = await loadFixture(deployInheritanceFixture);
+    expect(await inheritance.lastAction()).to.equal(block.timestamp);
   });
 
   it("Should accept ETH during deployment", async function () {
     const [_, heir] = await ethers.getSigners();
-    const factory = await ethers.getContractFactory("Inheritance");
     const value = ethers.parseEther("1");
-
+    const factory = await ethers.getContractFactory("Inheritance");
     const inheritance = await factory.deploy(heir.address, {
       value: value,
     });
