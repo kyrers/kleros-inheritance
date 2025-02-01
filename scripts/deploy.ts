@@ -8,11 +8,23 @@ async function main() {
 
   const { inheritance } = await hre.ignition.deploy(InheritanceModule, {
     parameters: {
-      InheritanceModule: { heir: heir.address },
+      InheritanceModule: {
+        heir: heir.address,
+        value: ethers.parseEther("0.01"),
+      },
     },
   });
-
   console.log("Inheritance deployed to:", inheritance.target.toString());
+
+  try {
+    await hre.run("verify:verify", {
+      address: inheritance.target,
+      constructorArguments: [heir.address],
+    });
+    console.log("## Contract verified successfully");
+  } catch (error) {
+    console.log("## Verification failed:", error);
+  }
 }
 
 main()
