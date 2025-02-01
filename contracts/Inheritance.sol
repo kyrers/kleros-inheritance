@@ -31,8 +31,8 @@ contract Inheritance is Ownable, ReentrancyGuard {
         _;
     }
 
-    modifier validHeir(address newHeir, address currentOwner) {
-        if (newHeir == address(0) || newHeir == currentOwner) {
+    modifier validHeir(address newHeir, address inheritanceOwner) {
+        if (newHeir == address(0) || newHeir == inheritanceOwner) {
             revert InvalidHeir();
         }
         _;
@@ -82,7 +82,7 @@ contract Inheritance is Ownable, ReentrancyGuard {
     function claimInheritance(
         address newHeir
     ) external onlyHeir validHeir(newHeir, msg.sender) {
-        if (block.timestamp < lastAction + INHERITANCE_PERIOD) {
+        if (block.timestamp <= lastAction + INHERITANCE_PERIOD) {
             revert InheritancePeriodNotReached();
         }
 
